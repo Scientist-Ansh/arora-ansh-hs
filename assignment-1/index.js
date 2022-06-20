@@ -1,20 +1,3 @@
-function tree(obj) {
-  let { name, items } = obj;
-
-  if (items?.length) {
-    name += '\n';
-    name += items
-      .map(tree)
-      .map((text, i, { length }) => {
-        return i < length - 1
-          ? '├──' + text.toString().replace(/\n/g, '\n│  ')
-          : '└──' + text.toString().replace(/\n/g, '\n   ');
-      })
-      .join('\n');
-  }
-  return name;
-}
-
 let obj = {
   name: 1,
   items: [
@@ -28,5 +11,22 @@ let obj = {
     },
   ],
 };
+
+function tree(obj) {
+  let result = '';
+  let { name, items } = obj;
+  if (items) {
+    result += name + '\n' + '├──';
+    items.forEach((item, i) => {
+      result += tree(item);
+      if (i < items.length - 1) {
+        result += '\n├──';
+      }
+    });
+  } else {
+    result += '└── ' + name;
+  }
+  return result;
+}
 
 console.log(tree(obj));
