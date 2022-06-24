@@ -35,7 +35,7 @@ program
 
 program.parse(process.argv);
 
-console.log(program.opts());
+const { concurrency, requests: req, body, url } = program.opts();
 const postData = JSON.stringify({
   msg: 'Hello World!',
 });
