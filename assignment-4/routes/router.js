@@ -12,8 +12,8 @@ router.get('/login', (req, res) => {
   res.render('login', { title: 'Login' });
 });
 
-router.get('/secret', connectEnsureLogin.ensureLoggedIn(), (req, res) =>
-  res.render('secret', { title: 'Secret Page' })
+router.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) =>
+  res.render('dashboard', { title: 'Dashboard' })
 );
 
 router.get('/logout', (req, res) => {
@@ -26,7 +26,7 @@ router.post(
   '/login',
   passport.authenticate('local', {
     failureRedirect: '/login',
-    successRedirect: '/secret',
+    successRedirect: '/dashboard',
   }),
   (req, res) => {
     console.log(req.user);
