@@ -33,4 +33,35 @@ router.post(
   }
 );
 
+// api routes
+router.get('/notes', (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('returns all the notes for the logged in user');
+});
+
+router.get('/notes/:noteId', (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('returns a single note');
+});
+
+router.post('/notes', (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('creates a new note');
+});
+
+router.put('/notes/:noteId', (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('updates a note');
+});
+
+router.delete('/notes/:noteId', (req, res) => {
+  res.statusCode = 200;
+  res.setHeader('Content-Type', 'text/plain');
+  res.end('deletes a note');
+});
+
 module.exports = router;
