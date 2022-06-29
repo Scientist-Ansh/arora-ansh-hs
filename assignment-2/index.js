@@ -1,6 +1,5 @@
 const fs = require('fs');
 const path = require('path');
-const { stat } = fs.promises;
 const program = require('commander');
 const tree = require('../assignment-1/index');
 
@@ -47,7 +46,7 @@ async function createDirectoryObject(dir, obj) {
   }
   for (let item of obj.items) {
     const filePath = path.join(dir, item.name);
-    const stats = await stat(filePath);
+    const stats = await fs.promises.stat(filePath);
     if (stats.isDirectory()) {
       await createDirectoryObject(filePath, item);
     }
