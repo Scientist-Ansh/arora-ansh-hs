@@ -10,6 +10,7 @@
 const http = require('http');
 const program = require('commander');
 const axios = require('axios');
+const chalk = require('chalk');
 
 program
   .version('0.0.1')
@@ -42,8 +43,8 @@ const postData = JSON.stringify({
 
 const timeArr = [];
 
-async function makeRequests() {
-  for (let i = 0; i < req; i++) {
+async function makeRequests(c) {
+  for (let i = 0; i < req; i = i + c) {
     const start = Date.now();
 
     try {
@@ -72,20 +73,24 @@ makeRequests().then(() => {
   }
   let average = sum / timeArr.length;
 
-  console.log(`bombared ${url}`);
-  console.log(`${req} requests in ${sum} ms`);
+  console.log(`bombared ${chalk.blue(url)}`);
+  console.log(`Made ${chalk.green(req)} requests in ${chalk.yellow(sum)} ms`);
   console.log(
-    `successfull requests ${timeArr.length - failedRequestsIndex.length}`
+    `successfull requests ${chalk.green(
+      timeArr.length - failedRequestsIndex.length
+    )}`
   );
-  console.log(`${failedRequestsIndex.length} requests failed`);
+  console.log(`${chalk.red(failedRequestsIndex.length)} requests failed`);
 
   for (let i = 0; i < timeArr.length; i++) {
     if (timeArr[i] === false) {
       console.log(`failed request ${i}`);
     } else {
-      console.log(`request ${i} took ${timeArr[i]} ms`);
+      console.log(
+        `request ${chalk.blue(i)} took ${chalk.yellow(timeArr[i])} ms`
+      );
     }
   }
 
-  console.log(`average request time ${average} ms`);
+  console.log(`average request time ${chalk.yellow(average)} ms`);
 });
