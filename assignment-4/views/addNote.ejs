@@ -1,0 +1,19 @@
+<!-- Form to add a new note with description and status -->
+<div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">Add a new note</h1>
+  <div class="col-lg-6 mx-auto">
+    <form action="/notes" method="POST">
+      <div class="form-group">
+        <label for="data">Description</label>
+        <textarea class="form-control" id="data" name="data" rows="8"></textarea>
+      </div>
+      <div class="form-group mt-5">
+        <label for="status">Status</label>
+        <select class="form-control" id="status" name="status">
+          <option value="public">public</option>
+          <option value="private">private</option>
+        </select>
+      </div>
+      <button type="submit" class="btn btn-primary mt-5">Add note</button>
+    </form>
+  </div>
