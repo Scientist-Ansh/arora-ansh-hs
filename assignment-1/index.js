@@ -29,4 +29,6 @@ function tree(obj) {
   return result;
 }
 
-console.log(tree(obj));
+// console.log(tree(obj));
+
+module.exports = tree;
