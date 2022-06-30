@@ -13,25 +13,16 @@
       "description": "Everything about your authentication"
     }
   ],
-  "schemes": [
-    "https",
-    "http"
-  ],
+  "schemes": ["https", "http"],
   "paths": {
     "/login": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Log user in",
         "description": "",
         "operationId": "loginUser",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "in": "body",
@@ -55,17 +46,11 @@
     },
     "/logout": {
       "post": {
-        "tags": [
-          "authentication"
-        ],
+        "tags": ["authentication"],
         "summary": "Log outs the user out of the account",
         "operationId": "logoutUser",
-        "consumes": [
-          "application/json"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
         "responses": {
           "200": {
             "description": "User Successfully logged out"
@@ -75,9 +60,7 @@
     },
     "/notes": {
       "get": {
-        "tags": [
-          "Notes"
-        ],
+        "tags": ["Notes"],
         "summary": "Get All user notes",
         "operationId": "getAllNotes",
         "responses": {
@@ -87,18 +70,12 @@
         }
       },
       "post": {
-        "tags": [
-          "Notes"
-        ],
+        "tags": ["Notes"],
         "summary": "Adds a new note",
         "description": "",
         "operationId": "addNewNote",
-        "consumes": [
-          "application/x-www-form-urlencoded"
-        ],
-        "produces": [
-          "application/json"
-        ],
+        "consumes": ["application/x-www-form-urlencoded"],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "data",
@@ -129,15 +106,11 @@
     },
     "/notes/{noteId}": {
       "get": {
-        "tags": [
-          "Notes"
-        ],
+        "tags": ["Notes"],
         "summary": "Find notes by ID",
         "description": "Returns a single note",
         "operationId": "getNoteById",
-        "produces": [
-          "application/json"
-        ],
+        "produces": ["application/json"],
         "parameters": [
           {
             "name": "noteId",
@@ -164,16 +137,11 @@
         }
       },
       "delete": {
-        "tags": [
-          "Notes"
-        ],
+        "tags": ["Notes"],
         "summary": "Deletes a pet",
         "description": "",
         "operationId": "deletePet",
-        "produces": [
-          "application/xml",
-          "application/json"
-        ],
+        "produces": ["application/xml", "application/json"],
         "parameters": [
           {
             "name": "api_key",
@@ -200,9 +168,7 @@
         }
       },
       "put": {
-        "tags": [
-          "Notes"
-        ],
+        "tags": ["Notes"],
         "summary": "Updates a note",
         "operationId": "updateNoteById",
         "parameters": [
@@ -253,9 +219,7 @@
     },
     "Note": {
       "type": "object",
-      "required": [
-        "name"
-      ],
+      "required": ["name"],
       "properties": {
         "id": {
           "type": "integer",
@@ -267,11 +231,8 @@
         },
         "status": {
           "type": "string",
-          "description": "pet status in the store",
-          "enum": [
-            "public",
-            "private"
-          ]
+          "description": "The ype of the note public or private",
+          "enum": ["public", "private"]
         },
         "data": {
           "type": "string",

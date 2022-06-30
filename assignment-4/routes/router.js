@@ -3,6 +3,8 @@ const router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login');
 const passport = require('passport');
 
+const UserDetails = require('../models/userDetails');
+
 // GET Routes
 router.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
@@ -19,6 +21,27 @@ router.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) =>
 router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
+});
+
+router.get('/signup', (req, res) => {
+  res.render('signup', { title: 'Signup' });
+});
+
+router.post('/signup', (req, res) => {
+  console.log(req.body);
+  const { username, password } = req.body;
+  const newUser = new UserDetails({
+    username,
+    password,
+  });
+  newUser.save((err) => {
+    if (err) {
+      console.log(err);
+      res.redirect('/signup');
+    } else {
+      res.redirect('/login');
+    }
+  });
 });
 
 // POST Routes
