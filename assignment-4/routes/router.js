@@ -4,6 +4,7 @@ const connectEnsureLogin = require('connect-ensure-login');
 const passport = require('passport');
 
 const UserDetails = require('../models/userDetails');
+const Notes = require('../models/Notes');
 
 // GET Routes
 router.get('/', (req, res) => {
@@ -18,6 +19,10 @@ router.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) =>
   res.render('dashboard', { title: 'Dashboard' })
 );
 
+router.get('/addNote', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  res.render('addNote', { title: 'Add Note' });
+});
+
 router.get('/logout', (req, res) => {
   req.logout();
   res.redirect('/');
@@ -30,17 +35,14 @@ router.get('/signup', (req, res) => {
 router.post('/signup', (req, res) => {
   console.log(req.body);
   const { username, password } = req.body;
-  const newUser = new UserDetails({
-    username,
-    password,
-  });
-  newUser.save((err) => {
+  UserDetails.register(new UserDetails({ username }), password, (err, user) => {
     if (err) {
       console.log(err);
-      res.redirect('/signup');
-    } else {
-      res.redirect('/login');
+      return res.render('signup', { title: 'Signup' });
     }
+    passport.authenticate('local')(req, res, () => {
+      res.redirect('/dashboard');
+    });
   });
 });
 
@@ -57,34 +59,134 @@ router.post(
 );
 
 // api routes
-router.get('/notes', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('returns all the notes for the logged in user');
+router.get('/notes', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  // if user is logged in, get the logged in user
+
+  UserDetails.findOne({ username: req.user.username }, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      Notes.find({ createdBy: user.username }, (err, notes) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.render('notes', { notes, title: 'Notes' });
+        }
+      });
+    }
+  });
 });
 
-router.get('/notes/:noteId', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('returns a single note');
+router.post('/notes', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  // if user is logged in, get the logged in user
+
+  UserDetails.findOne({ username: req.user.username }, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      const { data, status } = req.body;
+      console.log(data, status);
+      const newNote = new Notes({
+        createdBy: user.username,
+        data,
+        status,
+      });
+      newNote.save((err, note) => {
+        if (err) {
+          console.log(err);
+        } else {
+          res.redirect('/notes');
+        }
+      });
+    }
+  });
 });
 
-router.post('/notes', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('creates a new note');
+router.get('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  // if user is logged in, get the logged in user
+
+  UserDetails.findOne({ username: req.user.username }, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      Notes.findById(req.params.id, (err, note) => {
+        if (err) {
+          console.log(err);
+        } else {
+          if (note.status === 'private' && note.createdBy !== user.username) {
+            res.send('You are not authorized to view this note');
+          } else {
+            res.render('updateNote', { note, title: 'Update Note' });
+          }
+        }
+      });
+    }
+  });
 });
 
-router.put('/notes/:noteId', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('updates a note');
+router.delete('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  // if user is logged in, get the logged in user
+
+  UserDetails.findOne({ username: req.user.username }, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      Notes.findById(req.params.id, (err, note) => {
+        if (err) {
+          console.log(err);
+        } else {
+          if (note.createdBy !== user.username) {
+            res.send('You are not authorized to delete this note');
+          } else {
+            Notes.findByIdAndDelete(req.params.id, (err, note) => {
+              if (err) {
+                console.log(err);
+              } else {
+                res.send('Note deleted successfully');
+              }
+            });
+          }
+        }
+      });
+    }
+  });
 });
 
-router.delete('/notes/:noteId', (req, res) => {
-  res.statusCode = 200;
-  res.setHeader('Content-Type', 'text/plain');
-  res.end('deletes a note');
+router.post('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  // if user is logged in, get the logged in user
+
+  UserDetails.findOne({ username: req.user.username }, (err, user) => {
+    if (err) {
+      console.log(err);
+    } else {
+      Notes.findById(req.params.id, (err, note) => {
+        if (err) {
+          console.log(err);
+        } else {
+          if (note.createdBy !== user.username) {
+            res.send('You are not authorized to edit this note');
+          } else {
+            const { data, status } = req.body;
+            console.log(data, status);
+            Notes.findByIdAndUpdate(
+              req.params.id,
+              {
+                data,
+                status,
+              },
+              (err, note) => {
+                if (err) {
+                  console.log(err);
+                } else {
+                  res.redirect('/notes/' + req.params.id);
+                }
+              }
+            );
+          }
+        }
+      });
+    }
+  });
 });
 
 module.exports = router;
