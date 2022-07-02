@@ -84,12 +84,13 @@ router.post('/notes', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
     if (err) {
       console.log(err);
     } else {
-      const { data, status } = req.body;
-      console.log(data, status);
+      const { data, status, title } = req.body;
+      console.log(data, status, title);
       const newNote = new Notes({
         createdBy: user.username,
         data,
         status,
+        title,
       });
       newNote.save((err, note) => {
         if (err) {
@@ -116,6 +117,8 @@ router.get('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
           if (note.status === 'private' && note.createdBy !== user.username) {
             res.send('You are not authorized to view this note');
           } else {
+            console.log('note is: ', note);
+            console.log(note);
             res.render('updateNote', { note, title: 'Update Note' });
           }
         }
@@ -166,13 +169,14 @@ router.post('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
           if (note.createdBy !== user.username) {
             res.send('You are not authorized to edit this note');
           } else {
-            const { data, status } = req.body;
+            const { data, status, title } = req.body;
             console.log(data, status);
             Notes.findByIdAndUpdate(
               req.params.id,
               {
                 data,
                 status,
+                title,
               },
               (err, note) => {
                 if (err) {

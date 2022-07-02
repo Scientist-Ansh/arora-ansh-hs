@@ -3,6 +3,11 @@
   <h1 class="display-5 fw-bold">Add a new note</h1>
   <div class="col-lg-6 mx-auto">
     <form action="/notes" method="POST">
+      <!-- add an input for title -->
+      <div class="mb-2">
+        <label for="title" class="form-label">Title</label>
+        <input type="text" class="form-control" name="title" placeholder="Title" required>
+      </div>
       <div class="form-group">
         <label for="data">Description</label>
         <textarea class="form-control" id="data" name="data" rows="8"></textarea>
