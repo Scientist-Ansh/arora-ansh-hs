@@ -6,6 +6,43 @@ const passport = require('passport');
 const UserDetails = require('../models/userDetails');
 const Notes = require('../models/Notes');
 
+// api routes
+router.get('/api/notes', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  Notes.find({}, (err, notes) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json(notes);
+  });
+});
+
+router.get(
+  '/api/notes/:id',
+  connectEnsureLogin.ensureLoggedIn(),
+  (req, res) => {
+    Notes.findById(req.params.id, (err, note) => {
+      if (err) {
+        res.send(err);
+      }
+      res.json(note);
+    });
+  }
+);
+
+router.post('/api/notes', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
+  const note = new Notes();
+  note.title = req.body.title;
+  note.createdBy = req.user.username;
+  note.status = req.body.status;
+  note.data = req.body.data;
+  note.save((err) => {
+    if (err) {
+      res.send(err);
+    }
+    res.json({ message: 'Note created!' });
+  });
+});
+
 // GET Routes
 router.get('/', (req, res) => {
   res.render('index', { title: 'Home' });
