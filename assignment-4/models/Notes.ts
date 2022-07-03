@@ -8,7 +8,7 @@ export interface INote {
   createdBy: string;
 }
 
-const Note = new mongoose.Schema({
+const Note = new mongoose.Schema<INote>({
   title: String,
   createdBy: String,
   status: String,

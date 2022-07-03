@@ -45,7 +45,7 @@ router.post(
   (req: IRequest, res) => {
     const note = new Notes();
     note.title = req.body.title;
-    note.createdBy = req.user?.username;
+    note.createdBy = req.user?.username as string;
     note.status = req.body.status;
     note.data = req.body.data;
     note.save((err) => {
