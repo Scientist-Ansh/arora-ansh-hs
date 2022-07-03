@@ -1,9 +1,14 @@
 <!-- Page to see the note rendered from markdown -->
 <div class="px-4 py-5 my-5 text-center">
-  <h1 class="display-5 fw-bold">Update a note</h1>
-  <div class="col-lg-6 mx-auto">
+  <h1 class="display-5 fw-bold mb-5">View a note</h1>
+  <div class="col-lg-6 mx-auto text-start">
+
+    <%- result %>
 
 
+      <div class="mb-5">
+        <a type="button" class="btn btn-primary btn-lg px-4 gap-3 me-2" href="/updateNote/<%= note._id %>">Update
+          Note</a>
 
-
+      </div>
   </div>

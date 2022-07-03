@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const connectEnsureLogin = require('connect-ensure-login');
 const passport = require('passport');
+const md = require('markdown-it')();
 
 const UserDetails = require('../models/userDetails');
 const Notes = require('../models/Notes');
@@ -59,6 +60,19 @@ router.get('/dashboard', connectEnsureLogin.ensureLoggedIn(), (req, res) =>
 router.get('/addNote', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
   res.render('addNote', { title: 'Add Note' });
 });
+
+router.get(
+  '/updateNote/:id',
+  connectEnsureLogin.ensureLoggedIn(),
+  (req, res) => {
+    Notes.findById(req.params.id, (err, note) => {
+      if (err) {
+        res.send(err);
+      }
+      res.render('updateNote', { title: 'Update Note', note });
+    });
+  }
+);
 
 router.get('/logout', (req, res) => {
   req.logout();
@@ -155,8 +169,8 @@ router.get('/notes/:id', connectEnsureLogin.ensureLoggedIn(), (req, res) => {
             res.send('You are not authorized to view this note');
           } else {
             console.log('note is: ', note);
-            console.log(note);
-            res.render('updateNote', { note, title: 'Update Note' });
+            let result = md.render(note.data);
+            res.render('viewNote', { note, title: 'View Note', result });
           }
         }
       });
