@@ -43,8 +43,8 @@ const postData = JSON.stringify({
 
 const timeArr = [];
 
-async function makeRequests(c) {
-  for (let i = 0; i < req; i = i + c) {
+async function makeRequests() {
+  for (let i = 0; i < req; i++) {
     const start = Date.now();
 
     try {
