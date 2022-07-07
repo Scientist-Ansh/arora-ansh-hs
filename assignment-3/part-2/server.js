@@ -7,6 +7,7 @@
 // - `-b[body]` - if specified, should sent a random generated body with request,
 // - `url` - url which should be used for requests.
 
+const async = require('async');
 const http = require('http');
 const program = require('commander');
 const axios = require('axios');
@@ -41,56 +42,72 @@ const postData = JSON.stringify({
   msg: 'Hello World!',
 });
 
-const timeArr = [];
-
-async function makeRequests() {
+function* createRequestFunctions() {
   for (let i = 0; i < req; i++) {
-    const start = Date.now();
-
-    try {
+    yield (callback) => {
+      const start = Date.now();
       if (body) {
-        await axios.post(url, postData);
+        axios
+          .post(url, postData)
+          .then(() => {
+            const end = Date.now();
+            callback(null, end - start);
+          })
+          .catch(() => {
+            callback(null, false);
+          });
       } else {
-        await axios.get(url);
+        axios
+          .get(url)
+          .then(() => {
+            const end = Date.now();
+            callback(null, end - start);
+          })
+          .catch(() => {
+            callback(null, false);
+          });
       }
-    } catch (err) {
-      timeArr.push(false);
-    }
-    const end = Date.now();
-    timeArr.push(end - start);
+    };
   }
 }
-makeRequests().then(() => {
-  failedRequestsIndex = [];
 
-  let sum = 0;
-  for (let item of timeArr) {
-    if (item === false) {
-      continue;
-    } else {
-      sum += item;
+let successfulReq = 0;
+let failedReq = 0;
+let totalTime = 0;
+let timeArr = [];
+let c = parseInt(concurrency);
+c = c > 0 ? c : 1;
+
+async.parallelLimit([...createRequestFunctions()], c, (err, results) => {
+  if (err) {
+  } else {
+    for (const result of results) {
+      if (result === false) {
+        failedReq = failedReq + 1;
+      } else {
+        successfulReq = successfulReq + 1;
+        totalTime = totalTime + result;
+      }
+      timeArr.push(result);
     }
-  }
-  let average = sum / timeArr.length;
 
-  console.log(`bombared ${chalk.blue(url)}`);
-  console.log(`Made ${chalk.green(req)} requests in ${chalk.yellow(sum)} ms`);
-  console.log(
-    `successfull requests ${chalk.green(
-      timeArr.length - failedRequestsIndex.length
-    )}`
-  );
-  console.log(`${chalk.red(failedRequestsIndex.length)} requests failed`);
+    console.log(`bombared ${chalk.blue(url)}`);
+    console.log(
+      `Made ${chalk.green(req)} requests in ${chalk.yellow(totalTime)} ms`
+    );
+    console.log(`${chalk.yellow(c)} requests were made at a time`);
+    console.log(`successfull requests ${chalk.green(successfulReq)}`);
+    console.log(`${chalk.red(failedReq)} requests failed`);
 
-  for (let i = 0; i < timeArr.length; i++) {
-    if (timeArr[i] === false) {
-      console.log(`failed request ${i}`);
-    } else {
-      console.log(
-        `request ${chalk.blue(i)} took ${chalk.yellow(timeArr[i])} ms`
-      );
+    for (let i = 0; i < timeArr.length; i++) {
+      if (timeArr[i] === false) {
+        console.log(`failed request ${i}`);
+      } else {
+        console.log(
+          `request ${chalk.blue(i)} took ${chalk.yellow(timeArr[i])} ms`
+        );
+      }
     }
+    console.log(`average request time ${chalk.yellow(totalTime / req)} ms`);
   }
-
-  console.log(`average request time ${chalk.yellow(average)} ms`);
 });
