@@ -1,7 +1,7 @@
-const request = require('supercharge');
+const request = require('supertest');
 const app = require('./index.js');
 
-describe('Test the notes api', () => {
+describe('Test the webapp enpoints to return a successful response', () => {
   it('should return a list of notes', (done) => {
     request(app)
       .get('/notes')
@@ -10,7 +10,7 @@ describe('Test the notes api', () => {
         if (err) return done(err);
         done();
       });
-  }).timeout(5000);
+  });
 
   it('should return a single note', (done) => {
     request(app)
@@ -20,7 +20,7 @@ describe('Test the notes api', () => {
         if (err) return done(err);
         done();
       });
-  }).timeout(5000);
+  });
 
   it('should create a new note', (done) => {
     request(app)
@@ -30,7 +30,7 @@ describe('Test the notes api', () => {
         if (err) return done(err);
         done();
       });
-  }).timeout(5000);
+  });
 
   it('should update a note', (done) => {
     request(app)
@@ -40,5 +40,5 @@ describe('Test the notes api', () => {
         if (err) return done(err);
         done();
       });
-  }).timeout(5000);
+  });
 });
