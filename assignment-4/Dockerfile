@@ -14,6 +14,7 @@ RUN npm install
 
 # Bundle app source
 COPY ./dist .
+COPY ./views ./views
 
 EXPOSE 8080
 CMD [ "node", "index.js" ]

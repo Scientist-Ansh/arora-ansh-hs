@@ -11,7 +11,7 @@ const session = require('express-session');
 const routes = require('./routes/router');
 require('dotenv').config();
 
-mongoose.connect(process.env.MONGODB_URI, {
+mongoose.connect('mongodb://localhost:27017/myApp', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
 });
@@ -24,7 +24,7 @@ app.set('view engine', 'ejs');
 // Set up session
 app.use(
   session({
-    secret: process.env.SECRET,
+    secret: '1234567890',
     resave: false,
     saveUninitialized: true,
   })
