@@ -1,0 +1,16 @@
+<!-- display the notes as a list -->
+<div class="px-4 py-5 my-5 text-center">
+  <h1 class="display-5 fw-bold">All your notes</h1>
+  <div class="col-lg-6 mx-auto">
+    <!-- create a list of the notes passed into template using ejs templates -->
+    <ul class="list-group">
+      <% for (let note of notes) { %>
+        <li class="list-group-item">
+          <a href="/notes/<%= note._id %>">
+            <%= note.title %>
+          </a>
+        </li>
+        <% } %>
+    </ul>
+  </div>
+</div>
